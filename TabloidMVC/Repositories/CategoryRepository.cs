@@ -36,6 +36,37 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public Category GetById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT [Name]
+                        FROM Category
+                        WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    Category category = null;
+
+                    if (reader.Read())
+                    {
+                        category = new Category();
+                        category.Id = id;
+                        category.Name = reader.GetString(reader.GetOrdinal("Name"));
+                    }
+
+                    reader.Close();
+                    return category;
+                }
+            }
+        }
+
         public void Add(Category category)
         {
             using (SqlConnection conn = Connection)
@@ -51,6 +82,20 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@name", category.Name);
 
                     category.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Category WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
