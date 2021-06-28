@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 
@@ -8,6 +10,44 @@ namespace TabloidMVC.Repositories
     {
         public UserProfileRepository(IConfiguration config) : base(config) { }
 
+        public List<UserProfile> GetAllUsers()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+//Id, Email, CreateDateTime, ImageLocation, 
+                    cmd.CommandText = @"SELECT
+                                            U.FirstName,
+                                            U.LastName,
+                                            U.DisplayName,
+                                            U.UserTypeId,
+                                            ut.Name
+                                        FROM UserProfile U
+                                        LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
+                                        ORDER BY DisplayName
+                                        ";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<UserProfile> userProfiles = new List<UserProfile>();
+
+                    while(reader.Read())
+                    {
+                        UserProfile userProfile = new UserProfile
+                        {
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId"))
+                        };
+                        userProfiles.Add(userProfile);
+                    }
+                    reader.Close();
+                    return userProfiles;
+                }
+            }
+        }
         public UserProfile GetByEmail(string email)
         {
             using (var conn = Connection)
