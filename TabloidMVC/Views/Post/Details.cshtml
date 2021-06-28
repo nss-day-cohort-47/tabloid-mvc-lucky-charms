@@ -12,6 +12,12 @@
                 <h1 class="text-black-50">@Model.Category.Name</h1>
             </div>
             <div class="row justify-content-between">
+                <h4>Tags:</h4>
+                <p>
+                    @foreach (Tag tag in Model.Tags)
+                </p>
+            </div>
+            <div class="row justify-content-between">
                 <p class="text-secondary">Written by @Model.UserProfile.DisplayName</p>
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.PublishDateTime)</p>
             </div>
