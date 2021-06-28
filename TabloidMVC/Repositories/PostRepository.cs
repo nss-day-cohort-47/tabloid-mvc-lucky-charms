@@ -132,6 +132,49 @@ namespace TabloidMVC.Repositories
             }
         }
 
+        public List<Post> GetAllPostsByUser(int userProfileId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT	p.Id,
+		                        p.Title,
+		                        p.Content,
+		                        p.ImageLocation,
+		                        p.CreateDateTime,
+		                        p.PublishDateTime,
+		                        p.IsApproved,
+		                        c.Name AS Category
+                        FROM Post p
+                        LEFT JOIN Category c ON c.Id = p.CategoryId
+                        WHERE p.UserProfileId = @id
+                    ";
+                    cmd.Parameters.AddWithValue("@id", userProfileId);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<Post> posts = new List<Post>();
+
+                    while (reader.Read())
+                    {
+                        Post post = new Post()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Title = reader.GetString(reader.GetOrdinal("Title")),
+                            Content = reader.GetString(reader.GetOrdinal("Content")),
+                            ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                            PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
+                            IsApproved = reader.GetBoolean(reader.GetOrdinal("IsApproved"))
+                        };
+                    }
+                }
+
+            }
+        }
 
         public void Add(Post post)
         {
