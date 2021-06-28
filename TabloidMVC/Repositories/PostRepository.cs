@@ -147,10 +147,13 @@ namespace TabloidMVC.Repositories
 		                        p.CreateDateTime,
 		                        p.PublishDateTime,
 		                        p.IsApproved,
+                                p.UserProfileId,
+                                p.CategoryId,
 		                        c.Name AS Category
                         FROM Post p
                         LEFT JOIN Category c ON c.Id = p.CategoryId
                         WHERE p.UserProfileId = @id
+                        ORDER BY p.CreateDateTime DESC
                     ";
                     cmd.Parameters.AddWithValue("@id", userProfileId);
 
@@ -165,14 +168,33 @@ namespace TabloidMVC.Repositories
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
                             Title = reader.GetString(reader.GetOrdinal("Title")),
                             Content = reader.GetString(reader.GetOrdinal("Content")),
-                            ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation")),
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
-                            PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime")),
-                            IsApproved = reader.GetBoolean(reader.GetOrdinal("IsApproved"))
+                            IsApproved = reader.GetBoolean(reader.GetOrdinal("IsApproved")),
+                            UserProfileId = reader.GetInt32(reader.GetOrdinal("UserProfileId")),
+                            CategoryId = reader.GetInt32(reader.GetOrdinal("CategoryId")),
+                            Category = new Category()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("CategoryId")),
+                                Name = reader.GetString(reader.GetOrdinal("Category"))
+                            }
                         };
-                    }
-                }
 
+                        if (reader.IsDBNull(reader.GetOrdinal("ImageLocation")) == false)
+                        {
+                            post.ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation"));
+                        }
+
+                        if (reader.IsDBNull(reader.GetOrdinal("PublishDateTime")) == false)
+                        {
+                            post.PublishDateTime = reader.GetDateTime(reader.GetOrdinal("PublishDateTime"));
+                        }
+
+                        posts.Add(post);
+                    }
+
+                    reader.Close();
+                    return posts;
+                }
             }
         }
 
