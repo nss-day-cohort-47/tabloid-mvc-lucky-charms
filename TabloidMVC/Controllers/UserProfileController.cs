@@ -22,10 +22,6 @@ namespace TabloidMVC.Controllers
         }
         public IActionResult Index()
         {
-            //int CurrentUserId = GetCurrentUserProfileId();
-            //if (CurrentUserId == 1)
-            //{
-            //}
                 List<UserProfile> userProfiles = _userProfileRepository.GetAllUsers();
                 return View(userProfiles);
         }

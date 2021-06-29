@@ -23,10 +23,11 @@ namespace TabloidMVC.Repositories
                                             U.LastName,
                                             U.DisplayName,
                                             U.UserTypeId,
+                                            U.IsApproved,
                                             ut.Name
                                         FROM UserProfile U
                                         LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
-                                        WHERE U.UserTypeId != 3
+                                        WHERE U.IsApproved = 1
                                         ORDER BY DisplayName
                                         ";
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -64,10 +65,11 @@ namespace TabloidMVC.Repositories
                                             U.LastName,
                                             U.DisplayName,
                                             U.UserTypeId,
+                                            U.IsApproved,
                                             ut.Name
                                         FROM UserProfile U
                                         LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
-                                        WHERE U.UserTypeId = 3
+                                        WHERE U.IsApproved = 0
                                         ORDER BY DisplayName
                                         ";
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -202,7 +204,7 @@ namespace TabloidMVC.Repositories
                 {
                     cmd.CommandText = @"UPDATE UserProfile
                                         SET 
-                                            UserTypeId = 3
+                                            IsApproved = 0
                                         WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 
@@ -219,7 +221,7 @@ namespace TabloidMVC.Repositories
                 {
                     cmd.CommandText = @"UPDATE UserProfile
                                         SET 
-                                            UserTypeId = 2
+                                            IsApproved = 1
                                         WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 
@@ -239,12 +241,12 @@ namespace TabloidMVC.Repositories
                         INSERT INTO UserProfile (
                             DisplayName, FirstName, LastName,
                             Email, CreateDateTime, ImageLocation,
-                            UserTypeId )
+                            UserTypeId, IsApproved )
                         OUTPUT INSERTED.ID
                         VALUES (
                             @displayName, @firstName, @lastName,
                             @email, GETDATE(), @imageLocation,
-                            2 )";
+                            2, 1 )";
                     cmd.Parameters.AddWithValue("@displayName", user.DisplayName);
                     cmd.Parameters.AddWithValue("@firstName", user.FirstName);
                     cmd.Parameters.AddWithValue("@lastName", user.LastName);
