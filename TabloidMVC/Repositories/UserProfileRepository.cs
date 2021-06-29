@@ -32,7 +32,7 @@ namespace TabloidMVC.Repositories
 
                     List<UserProfile> userProfiles = new List<UserProfile>();
 
-                    while(reader.Read())
+                    while (reader.Read())
                     {
                         UserProfile userProfile = new UserProfile
                         {
@@ -117,7 +117,7 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@id", id);
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    if(reader.Read())
+                    if (reader.Read())
                     {
                         UserProfile userProfile = new UserProfile()
                         {
@@ -126,9 +126,13 @@ namespace TabloidMVC.Repositories
                             LastName = reader.GetString(reader.GetOrdinal("LastName")),
                             Email = reader.GetString(reader.GetOrdinal("Email")),
                             CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
-                            ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation")),
                             UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
-                            Id = reader.GetInt32(reader.GetOrdinal("Id"))
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                        };
+
+                        if (reader.IsDBNull(reader.GetOrdinal("ImageLocation")) == false)
+                        {
+                            userProfile.ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation"));
                         };
                         reader.Close();
 
