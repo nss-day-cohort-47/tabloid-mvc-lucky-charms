@@ -75,21 +75,23 @@ namespace TabloidMVC.Controllers
         // GET: UserProfileController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            UserProfile userProfile = _userProfileRepository.GetUserProfileById(id);
+            return View(userProfile);
         }
 
         // POST: UserProfileController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, UserProfile userProfile)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                _userProfileRepository.DeactivateUser(id);
+                return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return View(userProfile);
             }
         }
     }
