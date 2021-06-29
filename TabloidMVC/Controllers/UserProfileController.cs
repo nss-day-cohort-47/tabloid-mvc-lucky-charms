@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserProfileController : Controller
     {
         private readonly IUserProfileRepository _userProfileRepository;
@@ -19,8 +22,12 @@ namespace TabloidMVC.Controllers
         }
         public IActionResult Index()
         {
-            List<UserProfile> userProfiles = _userProfileRepository.GetAllUsers();
-            return View(userProfiles);
+            //int CurrentUserId = GetCurrentUserProfileId();
+            //if (CurrentUserId == 1)
+            //{
+            //}
+                List<UserProfile> userProfiles = _userProfileRepository.GetAllUsers();
+                return View(userProfiles);
         }
 
         public IActionResult UnauthorizedIndex()
@@ -61,7 +68,7 @@ namespace TabloidMVC.Controllers
         {
             UserProfile userProfile = _userProfileRepository.GetUserProfileById(id);
 
-            if(userProfile == null)
+            if (userProfile == null)
             {
                 return NotFound();
             }
@@ -128,6 +135,10 @@ namespace TabloidMVC.Controllers
                 return View(userProfile);
             }
         }
-
+        private int GetCurrentUserProfileId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
+        }
     }
 }
