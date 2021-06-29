@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -21,9 +23,10 @@ namespace TabloidMVC.Controllers
         // GET: CommentControllers
         public ActionResult Index(int id)
         {
-            List<Comment> comments = _commentRepo.GetCommentsByPost(id);
-
-            return View(comments);
+            var vm = new CommentCreateViewModel();
+            vm.Comments = _commentRepo.GetCommentsByPost(id);
+            vm.PostId = id;
+            return View(vm);
         }
 
         // GET: CommentControllers/Details/5
@@ -33,23 +36,27 @@ namespace TabloidMVC.Controllers
         }
 
         // GET: CommentControllers/Create
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
-            return View();
+            var vm = new CommentCreateViewModel();
+            vm.Comment = new Comment();
+            vm.PostId = id;
+            vm.UserId = GetCurrentUserProfileId();
+            return View(vm);
         }
 
         // POST: CommentControllers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Comment comment)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return View(comment);
             }
         }
 
@@ -93,6 +100,12 @@ namespace TabloidMVC.Controllers
             {
                 return View();
             }
+        }
+
+        private int GetCurrentUserProfileId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }
