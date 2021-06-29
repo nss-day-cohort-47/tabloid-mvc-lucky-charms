@@ -6,10 +6,14 @@ namespace TabloidMVC.Repositories
     public interface IUserProfileRepository
     {
         UserProfile GetByEmail(string email);
+<<<<<<< HEAD
         List<UserProfile> GetAllUsers();
         List<UserProfile> GetAllUnathenticatedUsers();
         UserProfile GetUserProfileById(int id);
         void DeactivateUser(int id);
         void ReactivateUser(int id);
+=======
+        void AddUserProfile(UserProfile user);
+>>>>>>> main
     }
 }
