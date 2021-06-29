@@ -15,11 +15,24 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IUserProfileRepository _userProfileRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository,
+                              ICategoryRepository categoryRepository,
+                              IUserProfileRepository userProfileRepository,
+                              ISubscriptionRepository subscriptionRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _userProfileRepository = userProfileRepository;
+            _subscriptionRepository = subscriptionRepository;
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
 
         public IActionResult Index()
@@ -41,6 +54,22 @@ namespace TabloidMVC.Controllers
                 }
             }
             return View(post);
+        }
+
+        public IActionResult Subscribe(int id)
+        {
+            Post thisPost = _postRepository.GetPublishedPostById(id);
+            UserProfile thisPostAuthor = _userProfileRepository.GetById(thisPost.UserProfileId);
+            int currentUserId = GetCurrentUserId();
+
+            Subscription subscription = new Subscription()
+            {
+                SubscriberUserProfileId = currentUserId,
+                ProviderUserProfileId = thisPostAuthor.Id
+            };
+
+            _subscriptionRepository.AddSubscription(subscription);
+            return RedirectToAction($"Details/{id}"); //This line takes us to a weird URL. Start here
         }
 
         public IActionResult Create()
