@@ -26,6 +26,48 @@ namespace TabloidMVC.Repositories
                                             ut.Name
                                         FROM UserProfile U
                                         LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
+                                        WHERE U.UserTypeId != 3
+                                        ORDER BY DisplayName
+                                        ";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<UserProfile> userProfiles = new List<UserProfile>();
+
+                    while (reader.Read())
+                    {
+                        UserProfile userProfile = new UserProfile
+                        {
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            Id = reader.GetInt32(reader.GetOrdinal("Id"))
+                        };
+                        userProfiles.Add(userProfile);
+                    }
+                    reader.Close();
+                    return userProfiles;
+                }
+            }
+        }
+
+        public List<UserProfile> GetAllUnathenticatedUsers()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT
+                                            U.Id,
+                                            U.FirstName,
+                                            U.LastName,
+                                            U.DisplayName,
+                                            U.UserTypeId,
+                                            ut.Name
+                                        FROM UserProfile U
+                                        LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
+                                        WHERE U.UserTypeId = 3
                                         ORDER BY DisplayName
                                         ";
                     SqlDataReader reader = cmd.ExecuteReader();
@@ -161,6 +203,23 @@ namespace TabloidMVC.Repositories
                     cmd.CommandText = @"UPDATE UserProfile
                                         SET 
                                             UserTypeId = 3
+                                        WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void ReactivateUser(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE UserProfile
+                                        SET 
+                                            UserTypeId = 2
                                         WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
 

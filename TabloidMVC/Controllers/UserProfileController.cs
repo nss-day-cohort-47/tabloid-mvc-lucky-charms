@@ -23,6 +23,11 @@ namespace TabloidMVC.Controllers
             return View(userProfiles);
         }
 
+        public IActionResult UnauthorizedIndex()
+        {
+            List<UserProfile> userProfiles = _userProfileRepository.GetAllUnathenticatedUsers();
+            return View(userProfiles);
+        }
         // GET: UserProfileController/Details/5
         public ActionResult Details(int id)
         {
@@ -94,5 +99,27 @@ namespace TabloidMVC.Controllers
                 return View(userProfile);
             }
         }
+
+        public ActionResult Reactivate(int id)
+        {
+            UserProfile userProfile = _userProfileRepository.GetUserProfileById(id);
+            return View(userProfile);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Reactivate(int id, UserProfile userProfile)
+        {
+            try
+            {
+                _userProfileRepository.ReactivateUser(id);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(userProfile);
+            }
+        }
+
     }
 }
