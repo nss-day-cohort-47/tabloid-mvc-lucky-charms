@@ -255,5 +255,25 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+
+        public void EditUserType(UserProfile userProfile)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE UserProfile
+                                        SET
+                                            UserTypeId = @userTypeId
+                                        WHERE Id = @id
+                                        ";
+                    cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
+                    cmd.Parameters.AddWithValue("@id", userProfile.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
