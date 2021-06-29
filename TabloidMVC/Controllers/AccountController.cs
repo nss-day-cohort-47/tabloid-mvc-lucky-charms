@@ -50,6 +50,42 @@ namespace TabloidMVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Register(UserProfile user)
+        {
+
+            UserProfile CheckExists = _userProfileRepository.GetByEmail(user.Email);
+
+            if (CheckExists != null)
+            {
+                ModelState.AddModelError("Email", "Email already in use");
+                return View();
+            }
+
+            _userProfileRepository.AddUserProfile(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+            };
+
+            var claimsIdentity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(claimsIdentity));
+
+            return RedirectToAction("Index", "Home");
+
+        }
+
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
