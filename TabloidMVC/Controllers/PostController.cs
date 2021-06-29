@@ -35,13 +35,6 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
-            List<Tag> tags = _tagRepository.GetAllTags();
-
-            PostDetailsViewModel vm = new PostDetailsViewModel()
-            {
-                Post = post,
-                Tags = tags
-            };
 
             if (post == null)
             {
@@ -52,7 +45,7 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
-            return View(vm);
+            return View(post);
         }
 
         public IActionResult Create()

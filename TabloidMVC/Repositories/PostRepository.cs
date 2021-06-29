@@ -66,11 +66,15 @@ namespace TabloidMVC.Repositories
                               u.FirstName, u.LastName, u.DisplayName, 
                               u.Email, u.CreateDateTime, u.ImageLocation AS AvatarImage,
                               u.UserTypeId, 
-                              ut.[Name] AS UserTypeName
+                              ut.[Name] AS UserTypeName,
+                              pt.TagId,
+                              t.[Name] AS TagName
                          FROM Post p
                               LEFT JOIN Category c ON p.CategoryId = c.id
                               LEFT JOIN UserProfile u ON p.UserProfileId = u.id
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
+                              LEFT JOIN PostTag pt on pt.PostId = p.Id
+                              LEFT JOIN Tag t on pt.TagId = t.Id
                         WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()
                               AND p.id = @id";
 
@@ -78,10 +82,17 @@ namespace TabloidMVC.Repositories
                     var reader = cmd.ExecuteReader();
 
                     Post post = null;
+                    List<Tag> Tags = new List<Tag>();
 
                     if (reader.Read())
                     {
                         post = NewPostFromReader(reader);
+                        Tag tag = new Tag
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("TagId")),
+                            Name = reader.GetString(reader.GetOrdinal("TagName"))
+                        };
+                        Tags.Add(tag);
                     }
 
                     reader.Close();

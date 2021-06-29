@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
+using TabloidMVC.Models.ViewModels;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -26,6 +27,15 @@ namespace TabloidMVC.Controllers
             List<Tag> tags = _tagRepository.GetAllTags();
 
             return View(tags);
+        }
+
+        // GET: TagController
+        public ActionResult TagListByPost(int id)
+        {
+            PostDetailsViewModel vm = new PostDetailsViewModel();
+            List<Tag> tags = _tagRepository.GetTagsByPostId(id);
+
+            return View(vm);
         }
 
         // GET: TagController/Details/5
