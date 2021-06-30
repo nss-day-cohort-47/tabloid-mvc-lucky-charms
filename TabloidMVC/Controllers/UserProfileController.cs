@@ -71,7 +71,7 @@ namespace TabloidMVC.Controllers
                 userProfile = userProfile
             };
             int count = _userProfileRepository.CheckNumOfAdmins();
-            if (count < 2)
+            if (count < 2 && userProfile.UserTypeId == 1)
             {
                 vm.CanDemote = false;
             }
@@ -103,7 +103,7 @@ namespace TabloidMVC.Controllers
                 userProfile = userProfile
             };
             int count = _userProfileRepository.CheckNumOfAdmins();
-            if (count < 2)
+            if (count < 2 && userProfile.UserTypeId == 1)
             {
                 vm.CanDeactivate = false;
             }
