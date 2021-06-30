@@ -36,7 +36,7 @@
                     @Html.DisplayFor(modelItem => item.Content)
                 </td>
                 <td>
-                    @Html.DisplayNameFor(model => model.Comment.UserProfile.FullName)
+                    @Html.DisplayFor(modelItem => item.UserProfile.FullName)
                 </td>
                 <td>
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
