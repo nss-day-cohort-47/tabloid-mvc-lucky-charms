@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 
@@ -8,6 +10,7 @@ namespace TabloidMVC.Repositories
 {
     public class UserProfileRepository : BaseRepository, IUserProfileRepository
     {
+
         public UserProfileRepository(IConfiguration config) : base(config) { }
 
         public List<UserProfile> GetAllUsers()
@@ -255,6 +258,56 @@ namespace TabloidMVC.Repositories
                     cmd.Parameters.AddWithValue("@id", id);
 
                     cmd.ExecuteNonQuery();
+
+                }
+            }
+        }
+        public int CheckNumOfAdmins()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT
+                                            U.Id,
+                                            U.FirstName,
+                                            U.LastName,
+                                            U.DisplayName,
+                                            U.UserTypeId,
+                                            U.IsApproved,
+                                            ut.Name
+                                        FROM UserProfile U
+                                        LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
+                                        WHERE U.IsApproved = 1
+                                        ORDER BY DisplayName
+                                        ";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<UserProfile> userProfiles = new List<UserProfile>();
+
+                    while (reader.Read())
+                    {
+                        UserProfile userProfile = new UserProfile
+                        {
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            Id = reader.GetInt32(reader.GetOrdinal("Id"))
+                        };
+                        userProfiles.Add(userProfile);
+                    }
+                    reader.Close();
+                    int count = 0;
+                    foreach (UserProfile userProfile in userProfiles)
+                    {
+                        if (userProfile.UserTypeId == 1)
+                        {
+                            count++;
+                        }
+                    }
+                    return count;
                 }
             }
         }

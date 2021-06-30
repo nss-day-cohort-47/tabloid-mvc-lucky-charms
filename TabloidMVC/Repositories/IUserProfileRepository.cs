@@ -14,5 +14,6 @@ namespace TabloidMVC.Repositories
         UserProfile GetById(int id);
         void AddUserProfile(UserProfile user);
         void EditUserType(UserProfile userProfile);
+        int CheckNumOfAdmins();
     }
 }
