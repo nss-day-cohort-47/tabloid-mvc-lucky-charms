@@ -15,10 +15,16 @@ namespace TabloidMVC.Controllers
     public class TagController : Controller
     {
         private readonly ITagRepository _tagRepository;
+        private readonly IPostRepository _postRepository;
+        private readonly IPostTagRepository _postTagRepository;
 
-        public TagController(ITagRepository tagRepository)
+        public TagController(ITagRepository tagRepository,
+                             IPostRepository postRepository,
+                             IPostTagRepository postTagRepository)
         {
             _tagRepository = tagRepository;
+            _postRepository = postRepository;
+            _postTagRepository = postTagRepository;
         }
 
         // GET: TagController
@@ -32,8 +38,14 @@ namespace TabloidMVC.Controllers
         // GET: TagController
         public ActionResult TagListByPost(int id)
         {
-            PostDetailsViewModel vm = new PostDetailsViewModel();
-            List<Tag> tags = _tagRepository.GetTagsByPostId(id);
+            List<Tag> tags = _tagRepository.GetAllTags();
+            List<Tag> postTags = _tagRepository.GetTagsByPostId(id);
+
+            TagManagerViewModel vm = new TagManagerViewModel()
+            {
+                AllTags = tags,
+                AddedTags = postTags
+            };
 
             return View(vm);
         }
