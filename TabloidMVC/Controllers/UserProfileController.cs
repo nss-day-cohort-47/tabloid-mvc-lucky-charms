@@ -8,6 +8,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
 using TabloidMVC.Repositories;
+using TabloidMVC.Models.ViewModels;
+
 
 namespace TabloidMVC.Controllers
 {
@@ -35,6 +37,7 @@ namespace TabloidMVC.Controllers
         public ActionResult Details(int id)
         {
             UserProfile userProfile = _userProfileRepository.GetUserProfileById(id);
+
             return View(userProfile);
         }
 
@@ -63,13 +66,16 @@ namespace TabloidMVC.Controllers
         public ActionResult Edit(int id)
         {
             UserProfile userProfile = _userProfileRepository.GetUserProfileById(id);
-
-            if (userProfile == null)
+            ProtectAdminViewModel vm = new ProtectAdminViewModel()
             {
-                return NotFound();
+                userProfile = userProfile
+            };
+            int count = _userProfileRepository.CheckNumOfAdmins();
+            if (count < 2)
+            {
+                vm.CanDemote = false;
             }
-
-            return View(userProfile);
+            return View(vm);
         }
 
         // POST: UserProfileController/Edit/5
@@ -92,7 +98,16 @@ namespace TabloidMVC.Controllers
         public ActionResult Delete(int id)
         {
             UserProfile userProfile = _userProfileRepository.GetUserProfileById(id);
-            return View(userProfile);
+            ProtectAdminViewModel vm = new ProtectAdminViewModel()
+            {
+                userProfile = userProfile
+            };
+            int count = _userProfileRepository.CheckNumOfAdmins();
+            if (count < 2)
+            {
+                vm.CanDeactivate = false;
+            }
+            return View(vm);
         }
 
         // POST: UserProfileController/Delete/5
@@ -136,5 +151,6 @@ namespace TabloidMVC.Controllers
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
         }
+        
     }
 }
