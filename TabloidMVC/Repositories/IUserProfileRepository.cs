@@ -11,6 +11,7 @@ namespace TabloidMVC.Repositories
         UserProfile GetUserProfileById(int id);
         void DeactivateUser(int id);
         void ReactivateUser(int id);
+        UserProfile GetById(int id);
         void AddUserProfile(UserProfile user);
         void EditUserType(UserProfile userProfile);
         int CheckNumOfAdmins();
