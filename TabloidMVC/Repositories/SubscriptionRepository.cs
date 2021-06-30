@@ -12,6 +12,44 @@ namespace TabloidMVC.Repositories
     {
         public SubscriptionRepository(IConfiguration config) : base(config) { }
 
+        public Subscription GetSubscriptionBySubPro(int subscriberId, int providerId)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT Id, SubscriberUserProfileId,
+                            ProviderUserProfileId, BeginDateTime,
+                            EndDateTime
+                        FROM Subscription
+                        WHERE SubscriberUserProfileId = @subscriberId
+                            AND ProviderUserProfileId = @providerId";
+                    cmd.Parameters.AddWithValue("@subscriberId", subscriberId);
+                    cmd.Parameters.AddWithValue("@providerId", providerId);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    Subscription subscription = null;
+
+                    if (reader.Read())
+                    {
+                        subscription = new Subscription()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            SubscriberUserProfileId = reader.GetInt32(reader.GetOrdinal("SubscriberUserProfileId")),
+                            ProviderUserProfileId = reader.GetInt32(reader.GetOrdinal("ProviderUserProfileId")),
+                            BeginDateTime = reader.GetDateTime(reader.GetOrdinal("BeginDateTime")),
+                            EndDateTime = reader.GetDateTime(reader.GetOrdinal("EndDateTime"))
+                        };
+                    }
+                    reader.Close();
+                    return subscription;
+                }
+            }
+        }
+
         public void AddSubscription(Subscription subscription)
         {
             using (SqlConnection conn = Connection)

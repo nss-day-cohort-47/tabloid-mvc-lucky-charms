@@ -29,7 +29,7 @@ namespace TabloidMVC.Controllers
             _subscriptionRepository = subscriptionRepository;
         }
 
-        private int GetCurrentUserId()
+        public int GetCurrentUserId()
         {
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
@@ -53,7 +53,49 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
-            return View(post);
+
+            bool ShouldShowSubscribe()
+            {
+                int currentUserId = GetCurrentUserId();
+                int postAuthorId = post.UserProfileId;
+
+                if (currentUserId == postAuthorId)
+                {
+                    return false;
+                } // Checking if the subcription already exists. If it does, returns false
+                else if (_subscriptionRepository.GetSubscriptionBySubPro(currentUserId, postAuthorId) != null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+            bool ShouldShowUnsubscribe()
+            {
+                int currentUserId = GetCurrentUserId();
+                int postAuthorId = post.UserProfileId;
+
+                if (_subscriptionRepository.GetSubscriptionBySubPro(currentUserId, postAuthorId) != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            PostDetailsViewModel vm = new PostDetailsViewModel()
+            {
+                Post = post,
+                ShowSubscribe = ShouldShowSubscribe(),
+                ShowUnsubscribe = ShouldShowUnsubscribe()
+            };
+
+            return View(vm);
         }
 
         public IActionResult Subscribe(int id)
@@ -69,7 +111,7 @@ namespace TabloidMVC.Controllers
             };
 
             _subscriptionRepository.AddSubscription(subscription);
-            return RedirectToAction($"Details/{id}"); //This line takes us to a weird URL. Start here
+            return RedirectToAction($"Details", new { id = id });
         }
 
         public IActionResult Create()
