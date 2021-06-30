@@ -24,11 +24,11 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            @*<td>
-                @Html.ActionLink("Edit", "Edit", new { id=tag.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=tag.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=tag.Id })
-            </td>*@
+            <td>
+                @*@Html.ActionLink("Edit", "Edit", new { id=tag.Id }) |*@
+                @*@Html.ActionLink("Details", "Details", new { id=tag.Id }) |*@
+                @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+            </td>
         </tr>
 }
     </tbody>
@@ -42,19 +42,19 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    @*<tbody>
         @foreach (var item in Model.NotAddedTags)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                @*<td>
+                <td>
                         @Html.ActionLink("Edit", "Edit", new { id=tag.Id }) |
                         @Html.ActionLink("Details", "Details", new { id=tag.Id }) |
                         @Html.ActionLink("Delete", "Delete", new { id=tag.Id })
-                    </td>*@
+                    </td>
             </tr>
         }
-    </tbody>
+    </tbody>*@
 </table>

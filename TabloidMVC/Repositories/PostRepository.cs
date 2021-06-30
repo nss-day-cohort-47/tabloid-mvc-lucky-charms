@@ -75,13 +75,7 @@ namespace TabloidMVC.Repositories
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
                               LEFT JOIN PostTag pt on pt.PostId = p.Id
                               LEFT JOIN Tag t on pt.TagId = t.Id
-<<<<<<< HEAD
                         WHERE p.IsApproved = 1 AND PublishDateTime < SYSDATETIME()
-=======
-
-                        WHERE p.IsApproved = 1 AND PublishDateTime < SYSDATETIME()
-
->>>>>>> main
                               AND p.id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
@@ -95,18 +89,11 @@ namespace TabloidMVC.Repositories
                         if (Tags.Count == 0)
                         {
                             post = NewPostFromReader(reader);
-<<<<<<< HEAD
-
                             reader.Close();
 
                             return post;
                         }
 
-=======
-                            reader.Close();
-                            return post;
-                        }
->>>>>>> main
                         post = NewPostFromReader(reader);
                         Tag tag = new Tag
                         {
@@ -114,10 +101,6 @@ namespace TabloidMVC.Repositories
                             Name = reader.GetString(reader.GetOrdinal("TagName"))
                         };
                         Tags.Add(tag);
-<<<<<<< HEAD
-
-=======
->>>>>>> main
                         reader.Close();
                     }
                     return post;
