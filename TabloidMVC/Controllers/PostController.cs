@@ -17,16 +17,19 @@ namespace TabloidMVC.Controllers
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUserProfileRepository _userProfileRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly ITagRepository _tagRepository;
 
         public PostController(IPostRepository postRepository,
                               ICategoryRepository categoryRepository,
                               IUserProfileRepository userProfileRepository,
-                              ISubscriptionRepository subscriptionRepository)
+                              ISubscriptionRepository subscriptionRepository,
+                              ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
             _userProfileRepository = userProfileRepository;
             _subscriptionRepository = subscriptionRepository;
+            _tagRepository = tagRepository;
         }
 
         public int GetCurrentUserId()
@@ -44,6 +47,7 @@ namespace TabloidMVC.Controllers
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
+
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
