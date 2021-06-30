@@ -1,8 +1,14 @@
-﻿@model TabloidMVC.Models.UserProfile
-
+﻿@model TabloidMVC.Models.ViewModels.ProtectAdminViewModel
+@Html.DisplayForModel()
 @{
     ViewData["Title"] = "Edit";
 }
+@if (Model.CanDemote == false)
+{
+    <h3>This is the only Admin account, please make another Admin before you demote this user.</h3>
+}
+else
+{
 
 <h1>Edit</h1>
 
@@ -13,12 +19,12 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input asp-for="Id" type="hidden" />
+                <input asp-for="userProfile.Id" type="hidden" />
             </div>
             <div class="form-group">
-                <label asp-for="UserTypeId" class="control-label"></label>
-                <input asp-for="UserTypeId" class="form-control" />
-                <span asp-validation-for="UserTypeId" class="text-danger"></span>
+                <label asp-for="userProfile.UserTypeId" class="control-label"></label>
+                <input asp-for="userProfile.UserTypeId" class="form-control" />
+                <span asp-validation-for="userProfile.UserTypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -30,6 +36,7 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

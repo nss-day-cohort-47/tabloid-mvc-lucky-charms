@@ -13,5 +13,6 @@ namespace TabloidMVC.Repositories
         void ReactivateUser(int id);
         void AddUserProfile(UserProfile user);
         void EditUserType(UserProfile userProfile);
+        int CheckNumOfAdmins();
     }
 }
