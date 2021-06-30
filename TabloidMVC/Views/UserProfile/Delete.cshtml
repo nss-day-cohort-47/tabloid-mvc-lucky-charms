@@ -1,8 +1,16 @@
-﻿@model TabloidMVC.Models.UserProfile
+﻿@model TabloidMVC.Models.ViewModels.ProtectAdminViewModel
+@Html.DisplayForModel() 
 
 @{
     ViewData["Title"] = "Delete";
 }
+@if (Model.CanDeactivate == false)
+{
+<h3>This is the only Admin account, please make another Admin before you deactivate this user.</h3>
+}
+else
+{
+
 
 <h1>Delete</h1>
 
@@ -11,64 +19,65 @@
     <h4>UserProfile</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.Id)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.Id)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.FirstName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.FirstName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.LastName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.LastName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DisplayName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.DisplayName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DisplayName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.DisplayName)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.Email)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.Email)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreateDateTime)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.CreateDateTime)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreateDateTime)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.CreateDateTime)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageLocation)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.ImageLocation)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageLocation)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.ImageLocation)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UserTypeId)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.UserTypeId)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UserTypeId)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.UserTypeId)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FullName)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.userProfile.FullName)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FullName)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.userProfile.FullName)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="submit" value="Deactivate User" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
+}
