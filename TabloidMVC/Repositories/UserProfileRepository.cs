@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 
@@ -8,6 +10,89 @@ namespace TabloidMVC.Repositories
     {
         public UserProfileRepository(IConfiguration config) : base(config) { }
 
+        public List<UserProfile> GetAllUsers()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT
+                                            U.Id,
+                                            U.FirstName,
+                                            U.LastName,
+                                            U.DisplayName,
+                                            U.UserTypeId,
+                                            U.IsApproved,
+                                            ut.Name
+                                        FROM UserProfile U
+                                        LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
+                                        WHERE U.IsApproved = 1
+                                        ORDER BY DisplayName
+                                        ";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<UserProfile> userProfiles = new List<UserProfile>();
+
+                    while (reader.Read())
+                    {
+                        UserProfile userProfile = new UserProfile
+                        {
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            Id = reader.GetInt32(reader.GetOrdinal("Id"))
+                        };
+                        userProfiles.Add(userProfile);
+                    }
+                    reader.Close();
+                    return userProfiles;
+                }
+            }
+        }
+
+        public List<UserProfile> GetAllUnathenticatedUsers()
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT
+                                            U.Id,
+                                            U.FirstName,
+                                            U.LastName,
+                                            U.DisplayName,
+                                            U.UserTypeId,
+                                            U.IsApproved,
+                                            ut.Name
+                                        FROM UserProfile U
+                                        LEFT JOIN UserType ut ON U.UserTypeId = ut.Id
+                                        WHERE U.IsApproved = 0
+                                        ORDER BY DisplayName
+                                        ";
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    List<UserProfile> userProfiles = new List<UserProfile>();
+
+                    while (reader.Read())
+                    {
+                        UserProfile userProfile = new UserProfile
+                        {
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            Id = reader.GetInt32(reader.GetOrdinal("Id"))
+                        };
+                        userProfiles.Add(userProfile);
+                    }
+                    reader.Close();
+                    return userProfiles;
+                }
+            }
+        }
         public UserProfile GetByEmail(string email)
         {
             using (var conn = Connection)
@@ -50,6 +135,145 @@ namespace TabloidMVC.Repositories
                     reader.Close();
 
                     return userProfile;
+                }
+            }
+        }
+
+        public UserProfile GetUserProfileById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT
+                                            u.Id,
+                                            u.DisplayName, 
+                                            u.FirstName, 
+                                            u.LastName, 
+                                            u.Email, 
+                                            u.CreateDateTime, 
+                                            u.ImageLocation, 
+                                            u.UserTypeId,
+                                            ut.[Name] AS UserTypeName
+                                        FROM UserProfile u
+                                        LEFT JOIN UserType ut on u.UserTypeId = ut.Id
+                                        WHERE u.id = @id
+                                        ";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                        UserProfile userProfile = new UserProfile()
+                        {
+                            DisplayName = reader.GetString(reader.GetOrdinal("DisplayName")),
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            Email = reader.GetString(reader.GetOrdinal("Email")),
+                            CreateDateTime = reader.GetDateTime(reader.GetOrdinal("CreateDateTime")),
+                            UserTypeId = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            UserType = new UserType()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("UserTypeId")),
+                                Name = reader.GetString(reader.GetOrdinal("UserTypeName"))
+                            },
+                        };
+
+                        if (reader.IsDBNull(reader.GetOrdinal("ImageLocation")) == false)
+                        {
+                            userProfile.ImageLocation = reader.GetString(reader.GetOrdinal("ImageLocation"));
+                        };
+                        reader.Close();
+
+                        return userProfile;
+                    }
+                    reader.Close();
+                    return null;
+                }
+            }
+        }
+
+        public void DeactivateUser(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE UserProfile
+                                        SET 
+                                            IsApproved = 0
+                                        WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        public void ReactivateUser(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE UserProfile
+                                        SET 
+                                            IsApproved = 1
+                                        WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void AddUserProfile(UserProfile user)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO UserProfile (
+                            DisplayName, FirstName, LastName,
+                            Email, CreateDateTime, ImageLocation,
+                            UserTypeId, IsApproved )
+                        OUTPUT INSERTED.ID
+                        VALUES (
+                            @displayName, @firstName, @lastName,
+                            @email, GETDATE(), @imageLocation,
+                            2, 1 )";
+                    cmd.Parameters.AddWithValue("@displayName", user.DisplayName);
+                    cmd.Parameters.AddWithValue("@firstName", user.FirstName);
+                    cmd.Parameters.AddWithValue("@lastName", user.LastName);
+                    cmd.Parameters.AddWithValue("@email", user.Email);
+                    cmd.Parameters.AddWithValue("@imageLocation", user.ImageLocation);
+
+                    user.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
+        public void EditUserType(UserProfile userProfile)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE UserProfile
+                                        SET
+                                            UserTypeId = @userTypeId
+                                        WHERE Id = @id
+                                        ";
+                    cmd.Parameters.AddWithValue("@userTypeId", userProfile.UserTypeId);
+                    cmd.Parameters.AddWithValue("@id", userProfile.Id);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
