@@ -44,7 +44,7 @@
                 }
                 @if (Model.ShowUnsubscribe)
                 {
-                    <a asp-action="" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Unsubscribe">
+                    <a asp-action="Unsubscribe" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Unsubscribe">
                         Unsubscribe
                     </a>
                 }

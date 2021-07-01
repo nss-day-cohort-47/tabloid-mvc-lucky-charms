@@ -76,5 +76,20 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+
+        public void RemoveSubscription(Subscription subscription)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "DELETE FROM Subscription WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", subscription.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
