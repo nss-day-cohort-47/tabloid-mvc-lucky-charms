@@ -22,7 +22,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Remove", "Delete", new { id=item.Id })
+                @*@Html.ActionLink("Remove", "Delete", new { id=item.Id })*@
             </td>
         </tr>
 }
@@ -45,7 +45,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.ActionLink("Add", "AddPostTag", new { item.Id, @Model.Post.Id })
+                    @*@Html.ActionLink("Add", "AddPostTag", new { item.Id, @Model.Post.Id })*@
                 </td>
             </tr>
         }

@@ -10,7 +10,9 @@ namespace TabloidMVC.Models.ViewModels
     {
         [DisplayName("Tags")]
         public List<Tag> AllTags { get; set; }
+        [DisplayName("Added Tags")]
         public List<Tag> AddedTags { get; set; }
+        [DisplayName("Other Tags")]
         public List<Tag> NotAddedTags { get; set; }
         public Post Post { get; set; }
     }
