@@ -6,9 +6,6 @@
 
 <h1>Tags</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -25,9 +22,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id=tag.Id }) |*@
-                @*@Html.ActionLink("Details", "Details", new { id=tag.Id }) |*@
-                @*@Html.ActionLink("Delete", "Delete", new { id=item.Id })*@
+                @Html.ActionLink("Remove", "Delete", new { id=item.Id })
             </td>
         </tr>
 }
@@ -42,7 +37,7 @@
             <th></th>
         </tr>
     </thead>
-    @*<tbody>
+    <tbody>
         @foreach (var item in Model.NotAddedTags)
         {
             <tr>
@@ -50,11 +45,9 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                        @Html.ActionLink("Edit", "Edit", new { id=tag.Id }) |
-                        @Html.ActionLink("Details", "Details", new { id=tag.Id }) |
-                        @Html.ActionLink("Delete", "Delete", new { id=tag.Id })
-                    </td>
+                    @Html.ActionLink("Add", "Delete", new { id = item.Id })
+                </td>
             </tr>
         }
-    </tbody>*@
+    </tbody>
 </table>

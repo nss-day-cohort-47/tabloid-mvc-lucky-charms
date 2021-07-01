@@ -40,11 +40,15 @@ namespace TabloidMVC.Controllers
         {
             List<Tag> tags = _tagRepository.GetAllTags();
             List<Tag> postTags = _tagRepository.GetTagsByPostId(id);
+            List<Tag> notAddedTags = tags.Where(t => !postTags.Any(pt => pt.Id == t.Id)).ToList();
+
+            
 
             TagManagerViewModel vm = new TagManagerViewModel()
             {
                 AllTags = tags,
-                AddedTags = postTags
+                AddedTags = postTags,
+                NotAddedTags = notAddedTags
             };
 
             return View(vm);

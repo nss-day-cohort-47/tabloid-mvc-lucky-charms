@@ -177,41 +177,22 @@ namespace TabloidMVC.Repositories
             }
         }
 
-        public List<Tag> GetNotAddedTagsByPostId(int postId)
-        {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                        SELECT pt.Id, pt.PostId, pt.TagId, t.Id, t.[Name] as TagName
-                        FROM PostTag pt
-                        JOIN Tag t on t.Id = pt.TagId
-                        WHERE pt.PostId != @postId
-                    ";
+        //public void AddPostTag(int id, int postId)
+        //{
+        //    using (SqlConnection conn = Connection)
+        //    {
+        //        conn.Open();
+        //        using (SqlCommand cmd = conn.CreateCommand())
+        //        {
+        //            cmd.CommandText = @"
+        //                SELECT count(id)
+        //                FROM PostTag
+        //                WHERE TagId = @id AND PostId = @postId"
+        //            ;
 
-                    cmd.Parameters.AddWithValue("@postId", postId);
-                    SqlDataReader reader = cmd.ExecuteReader();
-
-                    List<Tag> tags = new List<Tag>();
-
-                    while (reader.Read())
-                    {
-                        Tag tag = new Tag
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("TagId")),
-                            Name = reader.GetString(reader.GetOrdinal("TagName"))
-                        };
-
-                        tags.Add(tag);
-                    }
-
-                    reader.Close();
-
-                    return tags;
-                }
-            }
-        }
+        //            cmd.
+        //        }
+        //    }
+        //}
     }
 }
