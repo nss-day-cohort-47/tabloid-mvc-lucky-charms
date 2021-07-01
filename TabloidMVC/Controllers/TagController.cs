@@ -11,7 +11,7 @@ using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin, Author")]
     public class TagController : Controller
     {
         private readonly ITagRepository _tagRepository;
