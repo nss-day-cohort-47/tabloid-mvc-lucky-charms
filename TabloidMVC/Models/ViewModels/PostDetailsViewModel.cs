@@ -11,5 +11,6 @@ namespace TabloidMVC.Models.ViewModels
         public List<Tag> Tags { get; set; }
         public bool ShowSubscribe { get; set; }
         public bool ShowUnsubscribe { get; set; }
+        public bool CanInteract = false;
     }
 }

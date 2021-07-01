@@ -15,6 +15,20 @@
                 <p class="text-secondary">Written by @Model.Post.UserProfile.DisplayName</p>
                 <p class="text-black-50">Published on @Html.DisplayFor(model => model.Post.PublishDateTime)</p>
             </div>
+
+            @if (Model.CanInteract == true)
+            {
+                <div class="row">
+                    <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
+                        <i class="fas fa-pencil-alt"></i>
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                    <a asp-action="Index" asp-controller="Tag" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Manage-Tags">Manage Tags</a>
+                </div>
+            }
+
             <div class="row">
                 <a asp-action="Edit" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Edit">
                     <i class="fas fa-pencil-alt"></i>
@@ -36,6 +50,7 @@
                 }
                 <a asp-action="TagListByPost" asp-controller="Tag" asp-route-id="@Model.Post.Id" class="btn btn-outline-primary mx-1" title="Manage-Tags">Manage Tags</a>
             </div>
+
         </section>
         <hr />
         @if (!string.IsNullOrWhiteSpace(Model.Post.ImageLocation))

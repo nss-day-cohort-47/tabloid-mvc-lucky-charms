@@ -15,5 +15,6 @@ namespace TabloidMVC.Models
         public DateTime CreateDateTime { get; set; }
         public Post Post { get; set; }
         public UserProfile UserProfile { get; set; }
+        public bool CanInteract = false;
     }
 }
