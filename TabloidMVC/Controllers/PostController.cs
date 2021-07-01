@@ -176,14 +176,17 @@ namespace TabloidMVC.Controllers
 
         public ActionResult Edit(int id)
         {
-            Post post = _postRepository.GetPublishedPostById(id);
+            PostAllTagViewModel vm = new PostAllTagViewModel();
 
-            if (post == null)
+
+            vm.Post = _postRepository.GetPublishedPostById(id);
+            vm.AllTags = _tagRepository.GetAllTags();
+            if (vm == null)
             {
                 return NotFound();
             }
 
-            return View(post);
+            return View(vm);
         }
 
         [HttpPost]
