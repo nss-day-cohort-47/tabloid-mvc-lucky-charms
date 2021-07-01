@@ -1,35 +1,53 @@
-﻿@model IEnumerable<TabloidMVC.Models.Tag>
+﻿@model TabloidMVC.Models.ViewModels.TagManagerViewModel
 
 @{
     ViewData["Title"] = "TagListByPost";
 }
 
-<h1>TagListByPost</h1>
+<h1>Tags</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.AddedTags)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.AddedTags) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                @*@Html.ActionLink("Remove", "Delete", new { id=item.Id })*@
             </td>
         </tr>
 }
+    </tbody>
+</table>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NotAddedTags)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.NotAddedTags)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @*@Html.ActionLink("Add", "AddPostTag", new { item.Id, @Model.Post.Id })*@
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
