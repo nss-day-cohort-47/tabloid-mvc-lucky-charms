@@ -15,18 +15,34 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IUserProfileRepository _userProfileRepository;
+        private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly ITagRepository _tagRepository;
         private readonly IUserProfileRepository _userProfileRepository;
 
         public PostController(IPostRepository postRepository,
                               ICategoryRepository categoryRepository,
+<<<<<<< HEAD
                               ITagRepository tagRepository,
                               IUserProfileRepository userProfileRepository)
+=======
+                              IUserProfileRepository userProfileRepository,
+                              ISubscriptionRepository subscriptionRepository,
+                              ITagRepository tagRepository)
+>>>>>>> main
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _userProfileRepository = userProfileRepository;
+            _subscriptionRepository = subscriptionRepository;
             _tagRepository = tagRepository;
             _userProfileRepository = userProfileRepository;
+        }
+
+        public int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
 
         public IActionResult Index()
@@ -58,11 +74,73 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
+<<<<<<< HEAD
             if (post.UserProfileId == currentId || userProfile.UserTypeId == 1)
             {
                 post.CanInteract = true;
             }
             return View(post);
+=======
+
+            bool ShouldShowSubscribe()
+            {
+                int currentUserId = GetCurrentUserId();
+                int postAuthorId = post.UserProfileId;
+
+                if (currentUserId == postAuthorId)
+                {
+                    return false;
+                } // Checking if the subcription already exists. If it does, returns false
+                else if (_subscriptionRepository.GetSubscriptionBySubPro(currentUserId, postAuthorId) != null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+
+            bool ShouldShowUnsubscribe()
+            {
+                int currentUserId = GetCurrentUserId();
+                int postAuthorId = post.UserProfileId;
+
+                if (_subscriptionRepository.GetSubscriptionBySubPro(currentUserId, postAuthorId) != null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            PostDetailsViewModel vm = new PostDetailsViewModel()
+            {
+                Post = post,
+                ShowSubscribe = ShouldShowSubscribe(),
+                ShowUnsubscribe = ShouldShowUnsubscribe()
+            };
+
+            return View(vm);
+        }
+
+        public IActionResult Subscribe(int id)
+        {
+            Post thisPost = _postRepository.GetPublishedPostById(id);
+            UserProfile thisPostAuthor = _userProfileRepository.GetById(thisPost.UserProfileId);
+            int currentUserId = GetCurrentUserId();
+
+            Subscription subscription = new Subscription()
+            {
+                SubscriberUserProfileId = currentUserId,
+                ProviderUserProfileId = thisPostAuthor.Id
+            };
+
+            _subscriptionRepository.AddSubscription(subscription);
+            return RedirectToAction($"Details", new { id = id });
+>>>>>>> main
         }
 
         public IActionResult Create()
