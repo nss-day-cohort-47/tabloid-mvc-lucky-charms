@@ -15,5 +15,8 @@ namespace TabloidMVC.Models.ViewModels
         [DisplayName("Other Tags")]
         public List<Tag> NotAddedTags { get; set; }
         public Post Post { get; set; }
+        public bool ShowAdd { get; set; }
+        public bool ShowRemove { get; set; }
+        public Tag Tag { get; set; }
     }
 }

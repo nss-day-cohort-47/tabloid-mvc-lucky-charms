@@ -41,8 +41,14 @@ namespace TabloidMVC.Controllers
             List<Tag> tags = _tagRepository.GetAllTags();
             List<Tag> postTags = _tagRepository.GetTagsByPostId(id);
             List<Tag> notAddedTags = tags.Where(t => !postTags.Any(pt => pt.Id == t.Id)).ToList();
+            Post post = _postRepository.GetPublishedPostById(id);
+            //Tag tag = ;
 
-            
+            //bool ShouldShowAdd()
+            //{
+            //    int postId = post.Id;
+            //    int tagId = 
+            //}
 
             TagManagerViewModel vm = new TagManagerViewModel()
             {
