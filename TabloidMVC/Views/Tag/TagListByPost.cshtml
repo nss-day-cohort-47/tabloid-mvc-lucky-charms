@@ -45,7 +45,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.ActionLink("Add", "Delete", new { id = item.Id })
+                    @Html.ActionLink("Add", "AddPostTag", new { item.Id, @Model.Post.Id })
                 </td>
             </tr>
         }
