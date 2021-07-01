@@ -16,26 +16,39 @@ namespace TabloidMVC.Controllers
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ITagRepository _tagRepository;
+        private readonly IUserProfileRepository _userProfileRepository;
 
-        public PostController(IPostRepository postRepository, 
+        public PostController(IPostRepository postRepository,
                               ICategoryRepository categoryRepository,
-                              ITagRepository tagRepository)
+                              ITagRepository tagRepository,
+                              IUserProfileRepository userProfileRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
             _tagRepository = tagRepository;
+            _userProfileRepository = userProfileRepository;
         }
 
         public IActionResult Index()
         {
+            int currentId = GetCurrentUserProfileId();
+            UserProfile userProfile = _userProfileRepository.GetUserProfileById(currentId);
             var posts = _postRepository.GetAllPublishedPosts();
+            foreach (Post post in posts)
+            {
+                if (post.UserProfileId == currentId || userProfile.UserTypeId == 1)
+                {
+                    post.CanInteract = true;
+                }
+            }
             return View(posts);
         }
 
         public IActionResult Details(int id)
         {
             var post = _postRepository.GetPublishedPostById(id);
-
+            int currentId = GetCurrentUserProfileId();
+            UserProfile userProfile = _userProfileRepository.GetUserProfileById(currentId);
             if (post == null)
             {
                 int userId = GetCurrentUserProfileId();
@@ -44,6 +57,10 @@ namespace TabloidMVC.Controllers
                 {
                     return NotFound();
                 }
+            }
+            if (post.UserProfileId == currentId || userProfile.UserTypeId == 1)
+            {
+                post.CanInteract = true;
             }
             return View(post);
         }
@@ -93,6 +110,7 @@ namespace TabloidMVC.Controllers
         public ActionResult Delete(int id)
         {
             Post post = _postRepository.GetPublishedPostById(id);
+
             return View(post);
         }
 
