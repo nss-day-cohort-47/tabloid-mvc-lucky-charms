@@ -14,10 +14,16 @@ namespace TabloidMVC.Controllers
     public class CommentController : Controller
     {
         private readonly ICommentRepository _commentRepo;
+        private readonly IPostRepository _postRepository;
+        private readonly IUserProfileRepository _userProfileRepository;
 
-        public CommentController(ICommentRepository commentRepository)
+        public CommentController(ICommentRepository commentRepository,
+                                 IPostRepository postRepository,
+                                 IUserProfileRepository userProfileRepository)
         {
             _commentRepo = commentRepository;
+            _postRepository = postRepository;
+            _userProfileRepository = userProfileRepository;
         }
 
         // GET: CommentControllers
@@ -26,6 +32,15 @@ namespace TabloidMVC.Controllers
             var vm = new CommentCreateViewModel();
             vm.Comments = _commentRepo.GetCommentsByPost(id);
             vm.PostId = id;
+            int currentId = GetCurrentUserProfileId();
+            UserProfile userProfile = _userProfileRepository.GetUserProfileById(currentId);
+            foreach(Comment comment in vm.Comments)
+            {
+                if(comment.UserProfileId == currentId || userProfile.UserTypeId == 1)
+                {
+                    comment.CanInteract = true;
+                }
+            }
             return View(vm);
         }
 
