@@ -18,22 +18,15 @@ namespace TabloidMVC.Controllers
         private readonly IUserProfileRepository _userProfileRepository;
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly ITagRepository _tagRepository;
-        private readonly IUserProfileRepository _userProfileRepository;
 
         public PostController(IPostRepository postRepository,
                               ICategoryRepository categoryRepository,
-<<<<<<< HEAD
-                              ITagRepository tagRepository,
-                              IUserProfileRepository userProfileRepository)
-=======
                               IUserProfileRepository userProfileRepository,
                               ISubscriptionRepository subscriptionRepository,
                               ITagRepository tagRepository)
->>>>>>> main
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
-            _userProfileRepository = userProfileRepository;
             _subscriptionRepository = subscriptionRepository;
             _tagRepository = tagRepository;
             _userProfileRepository = userProfileRepository;
@@ -74,13 +67,10 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
-<<<<<<< HEAD
             if (post.UserProfileId == currentId || userProfile.UserTypeId == 1)
             {
                 post.CanInteract = true;
             }
-            return View(post);
-=======
 
             bool ShouldShowSubscribe()
             {
@@ -140,7 +130,6 @@ namespace TabloidMVC.Controllers
 
             _subscriptionRepository.AddSubscription(subscription);
             return RedirectToAction($"Details", new { id = id });
->>>>>>> main
         }
 
         public IActionResult Create()
