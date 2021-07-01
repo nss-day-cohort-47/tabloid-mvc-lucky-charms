@@ -176,11 +176,11 @@ namespace TabloidMVC.Controllers
 
         public ActionResult Edit(int id)
         {
-            PostAllTagViewModel vm = new PostAllTagViewModel();
+            PostAllCategoryViewModel vm = new PostAllCategoryViewModel();
 
 
             vm.Post = _postRepository.GetPublishedPostById(id);
-            vm.AllTags = _tagRepository.GetAllTags();
+            vm.AllCategories = _categoryRepository.GetAll();
             if (vm == null)
             {
                 return NotFound();
@@ -195,6 +195,9 @@ namespace TabloidMVC.Controllers
         {
             try
             {
+                //int catId = post.CategoryId;
+                //post.Category = _categoryRepository.GetById(catId);
+
                 _postRepository.EditPost(post);
 
                 return RedirectToAction("Index");

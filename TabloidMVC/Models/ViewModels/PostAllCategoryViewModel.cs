@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace TabloidMVC.Models.ViewModels
 {
-    public class PostAllTagViewModel
+    public class PostAllCategoryViewModel
     {
         public Post Post { get; set; }
 
-        public List<Tag> AllTags { get; set; }
+        public List<Category> AllCategories { get; set; }
     }
 }
