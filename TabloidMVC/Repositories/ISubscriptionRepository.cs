@@ -10,5 +10,6 @@ namespace TabloidMVC.Repositories
     {
         Subscription GetSubscriptionBySubPro(int subscriberId, int providerId);
         void AddSubscription(Subscription subscription);
+        void RemoveSubscription(Subscription subscription);
     }
 }

@@ -129,7 +129,20 @@ namespace TabloidMVC.Controllers
             };
 
             _subscriptionRepository.AddSubscription(subscription);
-            return RedirectToAction($"Details", new { id = id });
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        public IActionResult Unsubscribe(int id)
+        {
+            Post thisPost = _postRepository.GetPublishedPostById(id);
+            UserProfile thisPostAuthor = _userProfileRepository.GetById(thisPost.UserProfileId);
+            int currentUserId = GetCurrentUserId();
+
+            Subscription thisSub = _subscriptionRepository.GetSubscriptionBySubPro(currentUserId, thisPostAuthor.Id);
+
+            _subscriptionRepository.RemoveSubscription(thisSub);
+
+            return RedirectToAction("Details", new { id = id });
         }
 
         public IActionResult Create()

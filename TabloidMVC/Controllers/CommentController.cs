@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
 {
+    [Authorize]
     public class CommentController : Controller
     {
         private readonly ICommentRepository _commentRepo;
@@ -34,9 +36,9 @@ namespace TabloidMVC.Controllers
             vm.PostId = id;
             int currentId = GetCurrentUserProfileId();
             UserProfile userProfile = _userProfileRepository.GetUserProfileById(currentId);
-            foreach(Comment comment in vm.Comments)
+            foreach (Comment comment in vm.Comments)
             {
-                if(comment.UserProfileId == currentId || userProfile.UserTypeId == 1)
+                if (comment.UserProfileId == currentId || userProfile.UserTypeId == 1)
                 {
                     comment.CanInteract = true;
                 }
